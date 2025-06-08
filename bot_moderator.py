@@ -114,5 +114,5 @@ async def main():
     return app
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8080))
+    port = int(os.environ.get("PORT", 8080))  # берем порт из переменных окружения, если нет — 8080
     web.run_app(main(), port=port)
