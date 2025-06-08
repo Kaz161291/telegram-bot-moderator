@@ -12,7 +12,8 @@ from aiogram.filters import Command
 
 
 # 🔧 Конфигурация
-API_TOKEN = '5112027943:AAFYCoVJy8uwORnJYoIqbQN9b3-xzL8bNII'  # ← Вставь сюда свой токен
+API_TOKEN = os.getenv('API_TOKEN')  # ← Вставь сюда свой токен
+WEBHOOK_URL = os.getenv("WEBHOOK_URL")  # Адрес твоего вебхука (Render выдаст ссылку)
 GROUP_LINK = 'https://t.me/poputchik_sozak'  # ← Укажи свою ссылку
 OWNER_ID = 691724703  # ← замени это число на свой Telegram user ID
 
@@ -91,9 +92,25 @@ async def moderate_message(message: Message):
         return
 
 # ▶️ Запуск бота
+from aiohttp import web
+from aiogram.webhook.aiohttp_server import setup_application
+
+async def on_startup(dispatcher: Dispatcher, bot: Bot):
+    await bot.set_webhook(WEBHOOK_URL)
+    logging.info("✅ Webhook установлен")
+
+async def on_shutdown(dispatcher: Dispatcher, bot: Bot):
+    await bot.delete_webhook()
+    logging.info("❌ Webhook удалён")
+
 async def main():
-    logging.info("Бот запущен")
-    await dp.start_polling(bot)
+    app = web.Application()
+    dp.startup.register(on_startup)
+    dp.shutdown.register(on_shutdown)
+
+    setup_application(app, dp, bot=bot)
+    logging.info("🚀 AIOHTTP приложение запущено")
+    return app
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    web.run_app(main())
