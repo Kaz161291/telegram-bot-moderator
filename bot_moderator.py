@@ -101,6 +101,7 @@ async def on_startup(dispatcher: Dispatcher, bot: Bot):
 
 async def on_shutdown(dispatcher: Dispatcher, bot: Bot):
     await bot.delete_webhook()
+    await bot.session.close()
     logging.info("❌ Webhook удалён")
 
 async def main():
@@ -113,4 +114,5 @@ async def main():
     return app
 
 if __name__ == "__main__":
-    web.run_app(main())
+    port = int(os.environ.get("PORT", 8080))
+    web.run_app(main(), port=port)
