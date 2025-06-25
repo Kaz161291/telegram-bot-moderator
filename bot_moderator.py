@@ -104,6 +104,7 @@ async def on_startup(dispatcher: Dispatcher, bot: Bot):
 
 async def on_shutdown(dispatcher: Dispatcher, bot: Bot):
     await bot.delete_webhook()
+    await bot.session.close()  # ✅ Закрыть сессию
     logging.info("❌ Webhook удалён")
 
 async def main():
