@@ -113,7 +113,7 @@ async def main():
     register_handlers(dp)
 
     app = web.Application()
-    await setup_application(app, dp, bot=bot, path="/webhook")
+    setup_application(app, dp, bot=bot, path="/webhook")
     return app
 
 if __name__ == "__main__":
