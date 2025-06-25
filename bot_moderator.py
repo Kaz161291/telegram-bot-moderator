@@ -51,12 +51,8 @@ logging.basicConfig(
     ]
 )
 
-# --- ✅ Создание бота
-bot = Bot(token=API_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
-dp = Dispatcher()
 
 # --- ✅ Команда /reload
-@dp.message(Command("reload"))
 async def reload_words(message: Message):
     if message.from_user.id != OWNER_ID:
         await message.reply("⛔ Только владелец может использовать эту команду.")
@@ -83,7 +79,6 @@ def has_phone_number(text: str) -> bool:
     return bool(re.search(r'(\+7|8)[\s\-]?\(?\d{3}\)?[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}', text))
 
 # --- 🧹 Обработка сообщений
-@dp.message()
 async def handle_message(message: Message):
     if not message.text:
         return
@@ -97,6 +92,11 @@ async def handle_message(message: Message):
     if not is_allowed_message(text):
         await message.delete()
 
+# --- 🔗 Регистрация хендлеров
+def register_handlers(dp: Dispatcher):
+        dp.message.register(reload_words, Command("reload"))
+        dp.message.register(handle_message)
+
 # --- ▶️ Запуск
 async def on_startup(dispatcher: Dispatcher, bot: Bot):
     await bot.set_webhook(WEBHOOK_URL)
@@ -107,9 +107,14 @@ async def on_shutdown(dispatcher: Dispatcher, bot: Bot):
     logging.info("❌ Webhook удалён")
 
 async def main():
+    bot = Bot(token=API_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+    dp = Dispatcher()
+    register_handlers(dp)
+
     app = web.Application()
-    dp.startup.register(on_startup)
-    dp.shutdown.register(on_shutdown)
+    dp.startup.register(lambda d: on_startup(d, bot))
+    dp.shutdown.register(lambda d: on_shutdown(d, bot))
+
     setup_application(app, dp, bot=bot, path="/webhook")
     return app
 
