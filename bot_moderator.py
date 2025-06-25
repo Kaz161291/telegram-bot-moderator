@@ -112,8 +112,8 @@ async def main():
     register_handlers(dp)
 
     app = web.Application()
-    dp.startup.register(lambda d: on_startup(d, bot))
-    dp.shutdown.register(lambda d: on_shutdown(d, bot))
+    dp.startup.register(on_startup)
+    dp.shutdown.register(on_shutdown)
 
     setup_application(app, dp, bot=bot, path="/webhook")
     return app
