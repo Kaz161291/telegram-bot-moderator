@@ -113,8 +113,18 @@ async def main():
     register_handlers(dp)
 
     app = web.Application()
-    setup_application(app, dp, bot=bot, path="/webhook")
+
+    setup_application(
+        app=app,
+        dispatcher=dp,
+        bot=bot,
+        path="/webhook",
+        on_startup=on_startup,
+        on_shutdown=on_shutdown,
+    )
+
     return app
+
 
 if __name__ == "__main__":
     import asyncio
