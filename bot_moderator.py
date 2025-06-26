@@ -2,6 +2,7 @@ import os
 import re
 import logging
 import asyncio
+from aiogram.web import AppSettings, setup_application
 from aiohttp import web
 
 from aiogram import Bot, Dispatcher
@@ -114,7 +115,7 @@ async def main():
 
     app = web.Application()
 
-    setup_application(
+    await setup_application(
         app=app,
         dispatcher=dp,
         bot=bot,
