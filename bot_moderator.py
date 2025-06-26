@@ -114,7 +114,7 @@ async def main():
 
     app = web.Application()
 
-    return await setup_application(
+    await setup_application(
         app=app,
         dispatcher=dp,
         bot=bot,
@@ -123,9 +123,11 @@ async def main():
         on_shutdown=on_shutdown,
     )
 
+    return app  # <-- Возвращаем app вручную
 
 if __name__ == "__main__":
     import asyncio
-    web.run_app(asyncio.run(main()), port=int(os.getenv("PORT", 10000)))
+    app = asyncio.run(main())
+    web.run_app(app, port=int(os.getenv("PORT", 10000)))
 
 
