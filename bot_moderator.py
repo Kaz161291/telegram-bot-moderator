@@ -2,7 +2,6 @@ import os
 import re
 import logging
 import asyncio
-from aiogram.web import AppSettings, setup_application
 from aiohttp import web
 
 from aiogram import Bot, Dispatcher
@@ -115,7 +114,7 @@ async def main():
 
     app = web.Application()
 
-    await setup_application(
+    return await setup_application(
         app=app,
         dispatcher=dp,
         bot=bot,
@@ -124,12 +123,9 @@ async def main():
         on_shutdown=on_shutdown,
     )
 
-    return app
-
 
 if __name__ == "__main__":
     import asyncio
-    app = asyncio.run(main())
-    web.run_app(app, port=int(os.getenv("PORT", 10000)))
+    web.run_app(asyncio.run(main()), port=int(os.getenv("PORT", 10000)))
 
 
