@@ -114,7 +114,7 @@ async def main():
 
     app = web.Application()
 
-    await setup_application(
+    setup_application(
         app=app,
         dispatcher=dp,
         bot=bot,
